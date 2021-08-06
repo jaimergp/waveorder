@@ -9,7 +9,7 @@ import os
 
 bridge = Bridge(convert_camel_case=False)
 
-mm = bridge.getStudio()
+mm = bridge.get_studio()
 
 dm = mm.getDisplayManager()
 
