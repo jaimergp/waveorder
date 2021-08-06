@@ -20,11 +20,15 @@ dp = dv.getDataProvider()
 print("Generating coordinate set based on max indicies")
 # data provider can return the maximum number of each dimension in this dataset
 # each coordinate is (P, T, C, Z, Y, X)
-max_coord = dp.getMaxIndicies()
-max_p = max_coord.getP()
-max_t = max_coord.getT()
-max_c = max_coord.getC()
-max_z = max_coord.getZ()
+# max_coord = dp.getMaxIndicies()
+# max_p = max_coord.getP()
+# max_t = max_coord.getT()
+# max_c = max_coord.getC()
+# max_z = max_coord.getZ()
+max_p = dp.getNextIndex('position')
+max_t = dp.getNextIndex('time')
+max_c = dp.getNextIndex('channel')
+max_z = dp.getNextIndex('z')
 coordset = set()
 for p in range(max_p):
     for t in range(max_t):
@@ -44,6 +48,7 @@ z = zarr.open(src, mode='r+')
 
 # loop through all coordinates, construct a coordinate object and pass that to retrieve a coordinate
 # CoordBuilder = max_coord.copyBuilder()
+random_coord = dp.getAnyImage().getCoords()
 
 print("looping through coordinates, fetching data from micromanager, then writing data to array")
 # loop through coordset, for each item in the set, build a coordinate, fetch the image, place image in array
@@ -52,7 +57,7 @@ for c in coordset:
     if count % 500 == 0:
         print(f'writing image number {count} at coordinate {c}')
     count += 1
-    CoordBuilder = max_coord.copyBuilder()
+    CoordBuilder = random_coord.copyBuilder()
     CoordBuilder.p = c[0]
     CoordBuilder.t = c[1]
     CoordBuilder.c = c[2]
@@ -70,3 +75,9 @@ for c in coordset:
 # im = dp.getImage(coord)
 #
 # z[1, 1, 1, 1] = im.getRawPixels().reshape((2048, 2048))
+
+dm2 = mm.getDisplayManager()
+dv2 = dm2.getAllDataViewers().get(0)
+dp2 = dv2.getDataProvider()
+max_coord = dp2.getMaxIndicies()
+print(max_coord)
