@@ -6,6 +6,7 @@ This is a temporary script to fascilitate the conversion of TiffStacks from micr
 from pycromanager import Bridge
 import zarr
 import os
+import time
 
 bridge = Bridge(convert_camel_case=False)
 
@@ -43,6 +44,7 @@ pregen_zarr = 'test.zarr'
 src = os.path.join(target, pregen_zarr)
 print("opening pre-generated zarr array")
 z = zarr.open(src, mode='r+')
+print(f"zarr loaded and shape = {z.shape}")
 # z.shape = (16, 20, 4, 77, 2k, 2k)
 
 
@@ -53,9 +55,13 @@ random_coord = dp.getAnyImage().getCoords()
 print("looping through coordinates, fetching data from micromanager, then writing data to array")
 # loop through coordset, for each item in the set, build a coordinate, fetch the image, place image in array
 count = 0
+start = time.time()
 for c in coordset:
-    if count % 500 == 0:
+    if count % 100 == 0:
+        chkpoint = time.time()
         print(f'writing image number {count} at coordinate {c}')
+        print(f'\t time elapsed = {chkpoint-start}')
+        print(f'\t average time per image = {(chkpoint-start)/count}')
     count += 1
     CoordBuilder = random_coord.copyBuilder()
     CoordBuilder.p = c[0]
