@@ -29,6 +29,7 @@ class MicromanagerReader:
                  src: str,
                  data_type: str,
                  extract_data: bool = False,
+                 reshape: bool = False,
                  log_level: int = logging.ERROR):
         """
         reads data output from micro-manager and returns a zarr array or numpy array
@@ -93,6 +94,13 @@ class MicromanagerReader:
         int of number of positions
         """
         return self.reader.get_num_positions()
+
+    def get_missing_dims(self):
+        if isinstance(self.reader, MicromanagerOmeTiffReader):
+            return self.reader._missing_dims
+        else:
+            print("DATASET IS A TIFF SEQUENCE")
+            return None
 
     @property
     def shape(self):

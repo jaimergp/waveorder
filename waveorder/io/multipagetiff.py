@@ -10,7 +10,8 @@ class MicromanagerOmeTiffReader:
 
     def __init__(self,
                  folder: str,
-                 extract_data: bool = False):
+                 extract_data: bool = False,
+                 reshape: bool = False):
         """
         reads ome-tiff files into zarr or numpy arrays
         Strategy:
@@ -45,6 +46,8 @@ class MicromanagerOmeTiffReader:
 
         if extract_data:
             self._create_stores(self.master_ome_tiff)
+
+        self.reshape = reshape
 
     def _set_mm_meta(self):
         """
@@ -300,8 +303,9 @@ class MicromanagerOmeTiffReader:
             for idx, tiffpageseries in enumerate(tif.series):
                 self._set_dims_ome_meta(tiffpageseries)
                 z = zarr.open(tiffpageseries.aszarr(), mode='r')
-                z = self._reshape_zarr(z)
-                z = self._expand_zarr(z)
+                if self.reshape:
+                    z = self._reshape_zarr(z)
+                    z = self._expand_zarr(z)
                 self.positions[idx] = z
 
     def _get_master_ome_tiff(self, folder_):
