@@ -51,7 +51,7 @@ class MicromanagerReader:
 
         # identify data structure type
         if data_type == 'ometiff':
-            self.reader = MicromanagerOmeTiffReader(src, extract_data)
+            self.reader = MicromanagerOmeTiffReader(src, extract_data, reshape=reshape)
         elif data_type == 'singlepagetiff':
             self.reader = MicromanagerSequenceReader(src, extract_data)
         else:
