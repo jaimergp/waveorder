@@ -47,7 +47,11 @@ z = zarr.open(src, mode='r+')
 
 print("looping through coordinates, fetching data from micromanager, then writing data to array")
 # loop through coordset, for each item in the set, build a coordinate, fetch the image, place image in array
+count = 0
 for c in coordset:
+    if count % 500 == 0:
+        print(f'writing image number {count} at coordinate {c}')
+    count += 1
     CoordBuilder = max_coord.copyBuilder()
     CoordBuilder.p = c[0]
     CoordBuilder.t = c[1]
