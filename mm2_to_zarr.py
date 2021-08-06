@@ -61,7 +61,7 @@ for c in coordset:
         chkpoint = time.time()
         print(f'writing image number {count} at coordinate {c}')
         print(f'\t time elapsed = {chkpoint-start}')
-        print(f'\t average time per image = {(chkpoint-start)/count}')
+        print(f'\t average time per image = {(chkpoint-start)/(count+1)}')
     count += 1
     CoordBuilder = random_coord.copyBuilder()
     CoordBuilder.p = c[0]
