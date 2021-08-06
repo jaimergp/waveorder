@@ -130,7 +130,7 @@ class MicromanagerOmeTiffReader:
         zar:        (zarr.array)
 
         """
-
+        #todo: use zarr.array.view to reshape the data.  This is experimental!
         if self._missing_dims is None:
             target = np.array(zar).reshape((self.frames, self.channels, self.slices, self.height, self.width))
             return zarr.array(target, chunks=(1, 1, 1, self.height, self.width))
