@@ -8,23 +8,6 @@ import zarr
 import os
 import time
 
-# mm2python method
-# import zmq
-# from py4j.java_gateway import JavaGateway, GatewayParameters
-# gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_field=True))
-# gate = gateway.entry_point
-# py4jstudio = gate.getStudio()
-
-# class zmqdata:
-#     zmq_socket = None
-#
-#     def __init__(self):
-#         self.zmq_context = zmq.Context()
-#         self.zmq_socket = self.zmq_contxt.socket(zmq.PULL)
-#         self.zmq_socket.connect("tcp://localhost:5500")
-#         self.zmq_socket.set_hwm(0)
-
-
 # pycromanager method
 bridge = Bridge(convert_camel_case=False)
 mm = bridge.get_studio()
@@ -81,7 +64,7 @@ for c in coordset:
     mm_coord = CoordBuilder.build()
 
     if count % 100 == 0:
-        print(f"\t built coordinates (P, T, C, Z) = {mm_coord.getP(), mm_coord.getT(), mm_coord.getC(), mm_coord.getZ()}")
+        print(f"built coordinates (P, T, C, Z) = {mm_coord.getP(), mm_coord.getT(), mm_coord.getC(), mm_coord.getZ()}")
         print(f"\t loading image ...")
 
     im = dp.getImage(mm_coord)
