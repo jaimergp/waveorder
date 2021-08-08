@@ -89,7 +89,7 @@ for c in coordset:
         print(f"\t built coordinates (P, T, C, Z) = {mm_coord.getP(), mm_coord.getT(), mm_coord.getC(), mm_coord.getZ()}")
         print(f'\t time elapsed = {chkpoint-start}')
         print(f'\t average time per image = {(chkpoint-start)/(count+1)}')
-        print(f'\t pixel (100, 100) value = {im[100, 100]}')
+        print(f'\t pixel at 100 value = {im.getRawPixels()[100]}')
 
 # CoordBuilder.p = 1
 # CoordBuilder.t = 1
