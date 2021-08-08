@@ -67,7 +67,7 @@ for c in coordset:
 
     if count % 100 == 0:
         print(f"built coordinates (P, T, C, Z) = {mm_coord.getP(), mm_coord.getT(), mm_coord.getC(), mm_coord.getZ()}")
-        print(f"\t loading image ...")
+        print(f"\t loading image {count} ...")
 
     im = dp.getImage(mm_coord)
     z[c[0], c[1], c[2], c[3]] = im.getRawPixels().reshape((2048, 2048))
@@ -77,6 +77,7 @@ for c in coordset:
         chkpoint = time.time()
         print(f'\t time elapsed = {chkpoint-start}')
         print(f'\t average time per image = {(chkpoint-start)/(count+1)}')
+    if count % 1000 == 0:
         print(f'\t pixel at 100 value = {im.getRawPixels()[100]}')
 
 # CoordBuilder.p = 1
