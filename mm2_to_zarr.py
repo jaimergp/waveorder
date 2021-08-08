@@ -8,24 +8,34 @@ import zarr
 import os
 import time
 
+# mm2python method
+# import zmq
+# from py4j.java_gateway import JavaGateway, GatewayParameters
+# gateway = JavaGateway(gateway_parameters=GatewayParameters(auto_field=True))
+# gate = gateway.entry_point
+# py4jstudio = gate.getStudio()
+
+# class zmqdata:
+#     zmq_socket = None
+#
+#     def __init__(self):
+#         self.zmq_context = zmq.Context()
+#         self.zmq_socket = self.zmq_contxt.socket(zmq.PULL)
+#         self.zmq_socket.connect("tcp://localhost:5500")
+#         self.zmq_socket.set_hwm(0)
+
+
+# pycromanager method
 bridge = Bridge(convert_camel_case=False)
-
 mm = bridge.get_studio()
-
 dm = mm.getDisplayManager()
-
 dv = dm.getAllDataViewers().get(0)
-
 dp = dv.getDataProvider()
 
 print("Generating coordinate set based on max indicies")
 # data provider can return the maximum number of each dimension in this dataset
 # each coordinate is (P, T, C, Z, Y, X)
-# max_coord = dp.getMaxIndicies()
-# max_p = max_coord.getP()
-# max_t = max_coord.getT()
-# max_c = max_coord.getC()
-# max_z = max_coord.getZ()
+
 max_p = dp.getNextIndex('position')
 max_t = dp.getNextIndex('time')
 max_c = dp.getNextIndex('channel')
@@ -39,11 +49,15 @@ for p in range(max_p):
 print(f"num of images/coordinates in coordset = {len(coordset)}")
 
 # load target zarr array
-target = 'X:\\rawdata\\hummingbird\\Janie\\2021_07_29_LiveHEK_NoPerf_63x_09NA\\Endpoint\\Endpoint_TimeLapse_1_zarr\\'
+target = 'X:\\rawdata\\hummingbird\\Janie\\2021_07_29_LiveHEK_NoPerf_63x_09NA\\Endpoint\\Endpoint_TimeLapse_1_zarr'
 pregen_zarr = 'test.zarr'
 src = os.path.join(target, pregen_zarr)
 print("opening pre-generated zarr array")
-z = zarr.open(src, mode='r+')
+z = zarr.open(src, mode='r+')   # 'r+' is "read/write must exist"
+
+# print("creating a zarr array")
+# shp = (max_p, max_t, max_c, max_z, 2048, 2048)
+# z = zarr.open(local_target, mode='r+', shape=shp, chunks=(1,1,1,1,2048,2048), dtype='uint16')
 print(f"zarr loaded and shape = {z.shape}")
 # z.shape = (16, 20, 4, 77, 2k, 2k)
 
@@ -57,18 +71,22 @@ print("looping through coordinates, fetching data from micromanager, then writin
 count = 0
 start = time.time()
 for c in coordset:
-    if count % 100 == 0:
-        chkpoint = time.time()
-        print(f'writing image number {count} at coordinate {c}')
-        print(f'\t time elapsed = {chkpoint-start}')
-        print(f'\t average time per image = {(chkpoint-start)/(count+1)}')
+
     count += 1
     CoordBuilder = random_coord.copyBuilder()
-    CoordBuilder.p = c[0]
-    CoordBuilder.t = c[1]
-    CoordBuilder.c = c[2]
-    CoordBuilder.z = c[3]
+    CoordBuilder.p(c[0])
+    CoordBuilder.t(c[1])
+    CoordBuilder.c(c[2])
+    CoordBuilder.z(c[3])
     mm_coord = CoordBuilder.build()
+
+    # verify coordinate is built
+    if count % 100 == 0:
+        chkpoint = time.time()
+        print(f"\t built coordinates (P, T, C, Z) = {mm_coord.getP(), mm_coord.getT(), mm_coord.getC(), mm_coord.getZ()}")
+        print(f'\t time elapsed = {chkpoint-start}')
+        print(f'\t average time per image = {(chkpoint-start)/(count+1)}')
+
     im = dp.getImage(mm_coord)
     z[c[0], c[1], c[2], c[3]] = im.getRawPixels().reshape((2048, 2048))
 
@@ -82,8 +100,8 @@ for c in coordset:
 #
 # z[1, 1, 1, 1] = im.getRawPixels().reshape((2048, 2048))
 
-dm2 = mm.getDisplayManager()
-dv2 = dm2.getAllDataViewers().get(0)
-dp2 = dv2.getDataProvider()
-max_coord = dp2.getMaxIndicies()
-print(max_coord)
+# dm2 = mm.getDisplayManager()
+# dv2 = dm2.getAllDataViewers().get(0)
+# dp2 = dv2.getDataProvider()
+# max_coord = dp2.getMaxIndicies()
+# print(max_coord)
