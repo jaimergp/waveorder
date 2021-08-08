@@ -23,12 +23,14 @@ max_p = dp.getNextIndex('position')
 max_t = dp.getNextIndex('time')
 max_c = dp.getNextIndex('channel')
 max_z = dp.getNextIndex('z')
-coordset = set()
+# coordset = set()
+coordset = []
 for p in range(max_p):
     for t in range(max_t):
         for c in range(max_c):
             for z in range(max_z):
-                coordset.add((p, t, c, z))
+                # coordset.add((p, t, c, z))
+                coordset.append((p, t, c, z))
 print(f"num of images/coordinates in coordset = {len(coordset)}")
 
 # load target zarr array
