@@ -25,7 +25,7 @@ max_c = dp.getNextIndex('channel')
 max_z = dp.getNextIndex('z')
 # coordset = set()
 coordset = []
-for p in range(max_p):
+for p in range(4, max_p):
     for t in range(max_t):
         for c in range(max_c):
             for z in range(max_z):
