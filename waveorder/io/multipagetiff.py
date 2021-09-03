@@ -41,13 +41,13 @@ class MicromanagerOmeTiffReader:
 
         self._missing_dims = None
 
+        self.reshape = reshape
+
         self.master_ome_tiff = self._get_master_ome_tiff(folder)
         self._set_mm_meta()
 
         if extract_data:
             self._create_stores(self.master_ome_tiff)
-
-        self.reshape = reshape
 
     def _set_mm_meta(self):
         """
@@ -132,6 +132,7 @@ class MicromanagerOmeTiffReader:
         """
         #todo: use zarr.array.view to reshape the data.  This is experimental!
         if self._missing_dims is None:
+            # target = zar.reshape()
             target = np.array(zar).reshape((self.frames, self.channels, self.slices, self.height, self.width))
             return zarr.array(target, chunks=(1, 1, 1, self.height, self.width))
 
@@ -302,7 +303,7 @@ class MicromanagerOmeTiffReader:
         with TiffFile(master_ome) as tif:
             for idx, tiffpageseries in enumerate(tif.series):
                 self._set_dims_ome_meta(tiffpageseries)
-                z = zarr.open(tiffpageseries.aszarr(), mode='r')
+                z = zarr.open(tiffpageseries.aszarr(), mode='r', dtype='uint16')
                 if self.reshape:
                     z = self._reshape_zarr(z)
                     z = self._expand_zarr(z)
