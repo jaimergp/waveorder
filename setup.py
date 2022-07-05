@@ -3,7 +3,7 @@ from pathlib import Path
 import os
 import platform
 
-packages = [package for package in find_packages()]
+packages = [package for package in find_packages(exclude=("test", "tests", "test.*", "tests.*")]
 
 if platform.machine() == 'ppc64le':
         requirements = []
